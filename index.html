@@ -277,7 +277,7 @@ const DAYS = [
     ex('knee-raise', 'Hanging knee raise', 3, 8, 12, 60, '60 s', BODYWEIGHT),
   ] },
   { id: 'wed', label: 'Wed', title: 'Shoulder width, abs', note: 'Finish with a 20-minute incline walk at an easy pace.', exercises: [
-    ex('lateral-raise', 'Lateral raise', 3, 12, 15, 75, '60-90 s', { start: '5', inc: DUMBBELL }),
+    ex('lateral-raise', 'Lateral raise', 3, 12, 15, 75, '60-90 s', { start: '5', resetStart: true, inc: DUMBBELL }),
     ex('reverse-pec', 'Reverse pec deck', 3, 12, 15, 75, '60-90 s', { start: '15.9' }),
     ex('reverse-crunch', 'Reverse crunch', 3, 10, 15, 60, '60 s', BODYWEIGHT),
     ex('plank', 'Plank', 3, 30, 60, 60, '60 s', PLANK),
@@ -371,11 +371,14 @@ function rowsFor(exercise, dayId) {
     const row = last.rows[i] || last.rows[last.rows.length - 1];
     return row[field] || '';
   };
+  // A reset start applies until this exercise has been logged on this day.
+  const useStart = exercise.resetStart && !Object.keys(data.sessions).some(k =>
+    k !== key && k.endsWith(`|${dayId}`) && data.sessions[k][exercise.id] && data.sessions[k][exercise.id].some(r => r.done));
   return Array.from({ length: exercise.sets }, (_, i) => {
     if (saved && saved[i]) return saved[i];
     return {
-      w: exercise.weighted ? (fromLast(i, 'w') || exercise.start || '') : '',
-      r: fromLast(i, 'r') || String(exercise.lo),
+      w: exercise.weighted ? (useStart ? exercise.start : fromLast(i, 'w') || exercise.start || '') : '',
+      r: useStart ? String(exercise.lo) : fromLast(i, 'r') || String(exercise.lo),
       done: false,
     };
   });
