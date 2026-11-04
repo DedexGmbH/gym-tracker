@@ -276,11 +276,9 @@ const DAYS = [
     ex('cable-crunch', 'Cable crunch', 3, 10, 15, 60, '60 s', { start: '15.9' }),
     ex('knee-raise', 'Hanging knee raise', 3, 8, 12, 60, '60 s', BODYWEIGHT),
   ] },
-  { id: 'wed', label: 'Wed', title: 'Legs, core', exercises: [
-    ex('leg-press', 'Leg press', 3, 8, 12, 120, '2 min'),
-    ex('rdl', 'Romanian deadlift (dumbbells)', 3, 8, 10, 120, '2 min', { inc: DUMBBELL }),
-    ex('leg-curl', 'Leg curl', 3, 10, 12, 90, '90 s'),
-    ex('calf-raise', 'Calf raise', 3, 12, 15, 60, '60 s'),
+  { id: 'wed', label: 'Wed', title: 'Shoulder width, abs', note: 'Finish with a 20-minute incline walk at an easy pace.', exercises: [
+    ex('lateral-raise', 'Lateral raise', 3, 12, 15, 75, '60-90 s', { start: '5', inc: DUMBBELL }),
+    ex('reverse-pec', 'Reverse pec deck', 3, 12, 15, 75, '60-90 s', { start: '15.9' }),
     ex('reverse-crunch', 'Reverse crunch', 3, 10, 15, 60, '60 s', BODYWEIGHT),
     ex('plank', 'Plank', 3, 30, 60, 60, '60 s', PLANK),
   ] },
@@ -477,6 +475,7 @@ function workoutView() {
       <div class="count">${done} of ${total} sets done</div>
       <div class="meter"><i style="width:${total ? (done / total) * 100 : 0}%"></i></div>
     </header>
+    ${day.note ? `<div class="banner">${esc(day.note)}</div>` : ''}
     ${idx === -1 ? '<div class="banner">Today is a rest day. Pick a day above if you want to train anyway.</div>' : ''}
     ${done === total ? '<div class="banner">Workout done. Eat well and recover.</div>' : ''}
     ${day.exercises.map(e => exerciseCard(e, day)).join('')}`;
