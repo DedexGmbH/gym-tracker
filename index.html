@@ -62,7 +62,7 @@ button, input { font: inherit; color: inherit; }
 button { cursor: pointer; border: 0; background: none; }
 button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.days { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.days { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
 .day {
   min-height: 48px;
   border-radius: 12px;
@@ -298,6 +298,17 @@ const DAYS = [
     ex('cable-crunch', 'Cable crunch', 3, 10, 15, 60, '60 s'),
     ex('knee-raise', 'Hanging knee raise', 3, 8, 12, 60, '60 s', BODYWEIGHT),
   ] },
+  { id: 'sat', label: 'Sat', title: 'Catch-up: arms, width, abs', note: 'Only for weeks you missed Thursday or Friday. Drop set on the last set of hammer curls and pushdowns.', exercises: [
+    ex('pulldown-neutral', 'Lat pulldown (neutral grip)', 3, 10, 12, 120, '2 min', { start: '45', resetStart: true, cue: PULL_CUE }),
+    ex('incline-machine', 'Incline chest press machine', 3, 8, 12, 120, '2 min', { start: '32', resetStart: true, cue: CHEST_CUE }),
+    ex('lateral-raise', 'Lateral raise', 3, 12, 15, 75, '75 s', { start: '5', resetStart: true, inc: DUMBBELL }),
+    ex('incline-curl', 'Incline dumbbell curl', 3, 10, 12, 90, '90 s', { start: '6', resetStart: true, inc: DUMBBELL }),
+    ex('hammer-curl', 'Hammer curl', 3, 10, 12, 90, '90 s', { start: '10', resetStart: true, inc: DUMBBELL }),
+    ex('pushdown', 'Triceps pushdown', 3, 10, 12, 90, '90 s', { start: '18.1', resetStart: true }),
+    ex('overhead-ext', 'Overhead triceps extension', 3, 10, 12, 90, '90 s', { start: '6.8', resetStart: true }),
+    ex('cable-crunch', 'Cable crunch', 3, 10, 15, 60, '60 s', { start: '22.7', resetStart: true }),
+    ex('knee-raise', 'Hanging knee raise', 3, 8, 12, 60, '60 s', BODYWEIGHT),
+  ] },
 ];
 
 const pad = n => String(n).padStart(2, '0');
@@ -325,7 +336,7 @@ function cleanData(raw) {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
   const sessions = {};
   for (const [key, session] of Object.entries(raw.sessions || {})) {
-    if (!/^\d{4}-\d{2}-\d{2}\|(mon|tue|wed|thu|fri)$/.test(key) || !session || typeof session !== 'object') continue;
+    if (!/^\d{4}-\d{2}-\d{2}\|(mon|tue|wed|thu|fri|sat)$/.test(key) || !session || typeof session !== 'object') continue;
     sessions[key] = {};
     for (const [id, rows] of Object.entries(session)) {
       if (!Array.isArray(rows)) continue;
@@ -345,7 +356,7 @@ function cleanData(raw) {
 let data = cleanData(readStore(STORE_KEY)) || { sessions: {}, body: [] };
 const save = () => writeStore(STORE_KEY, data);
 
-const todayIndex = () => { const i = new Date().getDay() - 1; return i >= 0 && i < 5 ? i : -1; };
+const todayIndex = () => { const i = new Date().getDay() - 1; return i >= 0 && i < DAYS.length ? i : -1; };
 let view = { tab: 'workout', day: Math.max(todayIndex(), 0) };
 let message = '';
 
